@@ -1,0 +1,22 @@
+{
+  "name": "AppPackager",
+  "short_name": "AppPackager",
+  "description": "Dev v0.2 - finish TODOs",
+  "start_url": "../index.html",
+  "background_color": "#c3dba1",
+  "theme_color": "#c3dba1",
+  "display": "standalone",
+  "orientation": "natural",
+  "icons": [
+    {
+      "src": "../images/icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "../images/icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

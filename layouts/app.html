@@ -1,0 +1,84 @@
+<div id="welcome">
+    <p>Welcome To Shlomi's Web-App Builder!</p>
+    <p>Use this tool to create your very own web-app!</p>
+    <p>Web-Apps based on <a href="https://github.com/NadavTasher/WebAppBase">WebAppBase</a></p>
+    <p>Lighthouse Score:</p>
+    <table>
+        <tr>
+            <th>Performance</th>
+            <td>100</td>
+        </tr>
+        <tr>
+            <th>Progressive Web App</th>
+            <td>100</td>
+        </tr>
+        <tr>
+            <th>Accessibility</th>
+            <td>91</td>
+        </tr>
+        <tr>
+            <th>Best Practices</th>
+            <td>93</td>
+        </tr>
+        <tr>
+            <th>SEO</th>
+            <td>100</td>
+        </tr>
+    </table>
+    <button onclick="stageA()">Create a Web-App!</button>
+</div>
+<div id="stageA">
+    <p>First Stage: Basic Information</p>
+    <p>You'll need to enter some basic information for your app.</p>
+    <input id="app-name" placeholder="App Name" value="My Web App"/>
+    <input id="app-desc" placeholder="App Description" value="This web app does A, B and C"/>
+    <input id="app-color" placeholder="Hex Color" value="#123456"/>
+    <button onclick="stageB()">Next Stage</button>
+</div>
+<div id="stageB">
+    <p>Second Stage: App Icon</p>
+    <p>Enter the url for the app icon. Must be a png!</p>
+    <input id="app-icon-url" placeholder="http://my-app-icon-example.com/icon.png"/>
+    <button onclick="stageC()">Next Stage</button>
+</div>
+<div id="stageC">
+    <p>Third Stage: App Layout</p>
+    <button onclick="addButton()">Add Button</button>
+    <button onclick="addInput()">Add Input</button>
+    <button onclick="addImage()">Add Image</button>
+    <button onclick="addText()">Add Text</button>
+    <button onclick="stageD()">Next Stage</button>
+</div>
+<div id="stageD">
+    <p>You are basicly done!</p>
+    <p>Make sure you can install the web-app on your server!</p>
+    <p>Requirements:</p>
+    <table>
+        <tr>
+            <th>Webserver</th>
+            <td>Apache2</td>
+        </tr>
+        <tr>
+            <th>PHP</th>
+            <td>7.0</td>
+        </tr>
+        <tr>
+            <th>Preferred Server OS</th>
+            <td>Ubuntu Server 18.04</td>
+        </tr>
+    </table>
+    <button onclick="checkout()">Checkout!</button>
+</div>
+<div id="checkout">
+    <p>Your will be prepared when you click Download. This may take some time.</p>
+    <button onclick="generate();">Download</button>
+</div>
+<div id="thanks">
+    <p>Thanks for using our app builder! Enjoy!</p>
+    <button onclick="credits()">Credits</button>
+</div>
+<div id="credits">
+    <p>Challenge created by NotUFE</p>
+    <button onclick="window.location.reload(true)">Create Another</button>
+</div>
+<p id="general-text"></p>
