@@ -37,25 +37,19 @@ function checkout() {
 function generate() {
     hideAll();
     setText("Preparing Your Web-App");
-    let body = new FormData;
-    body.append("create", "true");
-    body.append("app-name", get("app-name").value);
-    body.append("app-desc", get("app-desc").value);
-    body.append("app-color", get("app-color").value);
-    body.append("app-icon", get("app-icon-url").value);
-    body.append("app-layout", layout.outerHTML);
-    fetch("php/builder.php", {
-        method: "post",
-        body: body
-    }).then(response => {
-        response.text().then((dataUrl) => {
-            if (!dataUrl.startsWith("data:application/zip")) {
-                setText(dataUrl);
-            } else {
-                window.location.href = dataUrl;
-                thanks();
-            }
-        });
+    api("scripts/backend/builder/builder.php", "builder", "create", {
+        "app-name": get("app-name").value,
+        "app-desc": get("app-desc").value,
+        "app-color": get("app-color").value,
+        "app-icon": get("app-icon-url").value,
+        "app-layout": layout.outerHTML,
+    }, (success, result, error) => {
+        if (success) {
+            download("YourApp.zip", result, "application/zip", "base64");
+            thanks();
+        } else {
+            setText("Web-App Building Error: " + error);
+        }
     });
 }
 

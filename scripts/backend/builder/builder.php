@@ -1,25 +1,26 @@
 <?php
-$directory = "../files/protected/webapps/";
-$default = "../files/default.zip";
-if (isset($_POST["create"])) {
-    // We need to create the app
-    $sources = get("app-sources");
-    $appName = get("app-name");
-    $appDesc = get("app-desc");
-    $appColor = get("app-color");
-    $appIcon = get("app-icon");
-    $appLayout = get("app-layout");
-    $id = id();
-    mkdir($directory . $id);
-    if (unzipSources($id, $sources)) {
-        createApp($id, $appName, $appDesc, $appColor, $appIcon, $appLayout);
-        echo zipToURL($id);
-    } else {
-        echo "Failed Unpacking.";
+
+include_once "../base/api.php";
+
+$directory = "../../../files/protected/webapps/";
+$default = "../../../files/default.zip";
+
+api("builder", function ($action, $parameters) {
+    global $directory, $default;
+    if ($action === "create") {
+        $id = id();
+        mkdir($directory . $id);
+        if (unzipSources($id, isset($parameters->{"app-sources"}) ? $parameters->{"app-sources"} : "")) {
+            createApp($id, $parameters->{"app-name"}, $parameters->{"app-desc"}, $parameters->{"app-color"}, $parameters->{"app-icon"}, $parameters->{"app-layout"});
+            return [true, zipToURL($id)];
+        } else {
+            return [false, "Failed Unpacking."];
+        }
     }
-} else {
-    echo "No Parameters";
-}
+    return [false, null];
+}, false);
+
+echo json_encode($result);
 
 function unzipSources($id, $sources)
 {
@@ -27,17 +28,7 @@ function unzipSources($id, $sources)
     $zipFile = ($sources === "" || !(startsWith($sources, "http") && endsWith($sources, ".zip"))) ? $default : download($id, $sources);
     $extPath = $directory . $id . "/webapp";
     mkdir($extPath);
-//    $zip = new ZipArchive;
-//    $res = $zip->open($zipFile);
-//    if ($res === true) {
-//
-//        $zip->extractTo($extPath);
-//        $zip->close();
-//        return true;
-//    } else {
-//        return false;
-//    }
-    shell_exec("unzip ".$zipFile." -d ".$extPath);
+    shell_exec("unzip " . $zipFile . " -d " . $extPath);
     return true;
 }
 
@@ -51,13 +42,12 @@ function createApp($id, $name, $desc, $color, $icon, $layout)
     replace($appDir . "index.html", "#FFFFFF", $color);
     replace($appDir . "index.html", "images/icon.png", $icon);
     replace($appDir . "index.html", "images/icon_apple.png", $icon);
-    replace($appDir . "index.html", "<!--Your App Body-->", $layout);
+    // Layout Replacements
+    replace($appDir . "layouts/app.html", "<!--App Layout-->", $layout);
     // Offline Replacements
-    replace($appDir . "resources/offline.html", "AppName", $name);
-    replace($appDir . "resources/offline.html", "AppDescription", $desc);
     replace($appDir . "resources/offline.html", "#FFFFFF", $color);
     // CSS Replacements
-    replace($appDir . "css/app.css", "#FFFFFF", $color);
+    replace($appDir . "stylesheets/app.css", "#FFFFFF", $color);
     // Manifest
     replace($appDir . "resources/manifest.json", "AppName", $name);
     replace($appDir . "resources/manifest.json", "AppDescription", $desc);
@@ -68,7 +58,6 @@ function createApp($id, $name, $desc, $color, $icon, $layout)
 function zipToURL($id)
 {
     global $directory;
-    $urlHeader = "data:application/zip;base64,";
     $appDir = $directory . $id . "/webapp/";
     $zipFile = $directory . $id . "/webapp.zip";
     $rootPath = realpath($appDir);
@@ -89,7 +78,7 @@ function zipToURL($id)
         }
     }
     $zip->close();
-    return $urlHeader . base64_encode(file_get_contents($zipFile));
+    return base64_encode(file_get_contents($zipFile));
 }
 
 function replace($file, $toReplace, $replacement)
